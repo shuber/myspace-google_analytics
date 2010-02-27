@@ -1,0 +1,98 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
+    <title>Google Analytics</title>
+    <link href="http://yui.yahooapis.com/combo?2.7.0/build/reset-fonts-grids/reset-fonts-grids.css&amp;2.7.0/build/base/base-min.css" media="screen" rel="stylesheet" type="text/css" />
+    <style type="text/css">
+      a {
+        color: #1B448F;
+      }
+      
+      label {
+        font-weight: bold;
+      }
+      
+      #form {
+        margin-right: 5px;
+      }
+      
+      #message {
+        background-color: #cfc;
+        border: 1px solid #030;
+        color: #030;
+        padding: 2px 4px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="doc3">
+      <p><a href="https://www.google.com/analytics/settings">Login to Google Analytics</a> and find your Web Property ID (informally referred to as UA number) to enter below. Example: UA-XXXXX-YY</p>
+      <p>Profile hits will be recorded in Google Analytics as page requests to "/myspace/YOUR_FRIEND_ID" so that you have the option to use one Google Analytics account to track all of your profiles or other social media.</p>
+      <p>You must allow this application to display on your profile page in order for it to work.</p>
+      <div>
+        <span id="form" style="display: none;">
+          <label for="ua_code">UA Code</label>: 
+          <input id="ua_code" name="ua_code" type="text" /> 
+          <input onclick="GoogleAnalytics.save();" name="save" value="Save" type="button" /> 
+        </span>
+        <span id="message">Loading your application data...</span>
+      </div>
+    </div>
+    <script type="text/javascript">
+      var GoogleAnalytics = {
+        element: document.getElementById('ua_code'),
+        form: document.getElementById('form'),
+        message: document.getElementById('message'),
+        load: function() {
+          try {
+            var os = opensocial.Container.get();
+            var request = os.newDataRequest();
+            var params = {}
+            params[opensocial.IdSpec.Field.USER_ID] = opensocial.IdSpec.PersonId.VIEWER;
+            params[opensocial.IdSpec.Field.NETWORK_DISTANCE] = 0;
+            params[opensocial.DataRequest.DataRequestFields.ESCAPE_TYPE] = opensocial.EscapeType.HTML_ESCAPE;
+            var spec = opensocial.newIdSpec(params);
+            request.add(request.newFetchPersonAppDataRequest(spec, 'ua_number', params), 'app');
+            request.send(function(response) {
+              if (!response.hadError()) {
+                var app = response.get('app');
+                if (!app.hadError()) {
+                  var data = app.getData()[gadgets.views.getParams().viewerId];
+                  var value = (typeof data.ua_number != 'object') ? data.ua_number : '';
+                  GoogleAnalytics.element.value = value;
+                }
+              }
+            });
+            GoogleAnalytics.form.style.display = 'inline';
+            GoogleAnalytics.message.style.display = 'none';
+          } catch (error) {
+            GoogleAnalytics.notify(error.description);
+          }
+        },
+        notify: function(message) {
+          GoogleAnalytics.message.innerHTML = message;
+          GoogleAnalytics.message.style.display = 'inline';
+        },
+        save: function() {
+          GoogleAnalytics.notify('Saving...');
+          try {
+            var request = opensocial.newDataRequest();
+            var value = (GoogleAnalytics.element.value == '' ? {} : '"' + GoogleAnalytics.element.value + '"');
+            request.add(request.newUpdatePersonAppDataRequest(opensocial.IdSpec.PersonId.VIEWER, 'ua_number', value));
+            request.send(function(response) {
+              if (response.hadError()) {
+                GoogleAnalytics.notify('Error: ' + response.getErrorMessage());
+              } else {
+                GoogleAnalytics.notify('UA Code updated');
+              }
+            });
+          } catch (error) {
+            GoogleAnalytics.notify(error.description);
+          }
+        },
+      }
+      GoogleAnalytics.load();
+    </script>
+  </body>
+</html>

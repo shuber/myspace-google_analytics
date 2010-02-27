@@ -1,0 +1,7 @@
+= MySpace - Google Analytics
+
+Adds Google Analytics to your profile
+
+== Installation
+
+See http://www.myspace.com/524475142

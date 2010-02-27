@@ -1,0 +1,54 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
+    <style type="text/css">
+      a {
+        display: block;
+        height: 100%;
+        padding-top: 10px;
+      }
+      
+      body {
+        background-color: #fff;
+        margin: 0;
+        padding: 0;
+        text-align: center;
+      }
+      
+      img {
+        border-width: 0px;
+      }
+    </style>
+  </head>
+  <body>
+    <a href="http://www.myspace.com/524475142" target="_blank"><img alt="Google Analytics" src="http://www.google.com/images/logos/analytics_logo.gif" /></a>
+    <script type="text/javascript">
+      document.write(unescape("%3Cscript src='http://www.google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+    </script>
+    <script type="text/javascript">
+      try {
+        var request = opensocial.Container.get().newDataRequest();
+        var params = {}
+        params[opensocial.IdSpec.Field.USER_ID] = opensocial.IdSpec.PersonId.VIEWER;
+        params[opensocial.IdSpec.Field.NETWORK_DISTANCE] = 0;
+        params[opensocial.DataRequest.DataRequestFields.ESCAPE_TYPE] = opensocial.EscapeType.HTML_ESCAPE;
+        var spec = opensocial.newIdSpec(params);
+        request.add(request.newFetchPersonAppDataRequest(spec, 'ua_number', params), 'app');
+        request.send(function(response) {
+          if (!response.hadError()) {
+            var app = response.get('app');
+            if (!app.hadError()) {
+              var data = app.getData()[gadgets.views.getParams().ownerId];
+              if (typeof data.ua_number != 'object') {
+                var pageTracker = _gat._getTracker(data.ua_number);
+                var owner_id = window.location.search.match(/[&|\?]ownerId=(\d+)/)[1];
+                pageTracker._trackPageview('/myspace/' + owner_id);
+              }
+            }
+          }
+        });
+      } catch (error) { }
+    </script>
+  </body>
+</html>
