@@ -27,13 +27,14 @@
   </head>
   <body>
     <div id="doc3">
-      <p><a href="https://www.google.com/analytics/settings">Login to Google Analytics</a> and find your Web Property ID (informally referred to as UA number) to enter below. Example: UA-XXXXX-YY</p>
+      <h3>Note: requires a Google Analytics account - create one for free at <a href="https://www.google.com/analytics">https://www.google.com/analytics</a>.</h3>
+      <p><a href="https://www.google.com/analytics">Login or signup to Google Analytics</a> and find your Web Property ID (informally referred to as UA number) to enter below. Example: UA-XXXXX-YY</p>
       <p>Profile hits will be recorded in Google Analytics as page requests to "/myspace/YOUR_FRIEND_ID" so that you have the option to use one Google Analytics account to track all of your profiles or other social media.</p>
       <p>You must allow this application to display on your profile page in order for it to work.</p>
       <div>
         <span id="form" style="display: none;">
-          <label for="ua_code">UA Code</label>: 
-          <input id="ua_code" name="ua_code" type="text" /> 
+          <label for="ua_number">UA Number</label>: 
+          <input id="ua_number" name="ua_number" type="text" /> 
           <input onclick="GoogleAnalytics.save();" name="save" value="Save" type="button" /> 
         </span>
         <span id="message">Loading your application data...</span>
@@ -41,7 +42,7 @@
     </div>
     <script type="text/javascript">
       var GoogleAnalytics = {
-        element: document.getElementById('ua_code'),
+        element: document.getElementById('ua_number'),
         form: document.getElementById('form'),
         message: document.getElementById('message'),
         load: function() {
@@ -84,7 +85,7 @@
               if (response.hadError()) {
                 GoogleAnalytics.notify('Error: ' + response.getErrorMessage());
               } else {
-                GoogleAnalytics.notify('UA Code updated');
+                GoogleAnalytics.notify('UA Number updated');
               }
             });
           } catch (error) {
